@@ -1,32 +1,18 @@
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
-            "Resource": "arn:aws:logs:*:*:*"
-        },
-        {
-            "Action": [
-                "dynamodb:PutItem"
-            ],
-            "Effect": "Allow",
-            "Resource": "arn:aws:dynamodb:us-east-1:442498226259:table/Message"
-        },
-        {
-            "Action": [
-                "sqs:Describe*",
-                "sqs:Get*",
-                "sqs:List*",
-                "sqs:DeleteMessage",
-                "sqs:ReceiveMessage"
-            ],
-            "Effect": "Allow",
-            "Resource": "arn:aws:sqs:us-east-1:442498226259:Messages"
-        }
-    ]
-}
+import json
+import boto3
+
+from datetime import datetime
+
+def lambda_handler(event, context):
+ 
+    now = datetime.now()
+    time_date = now.strftime("%H:%M:%S %m/%d/%Y")
+
+    sqs = boto3.client('sqs')
+    
+    sqs.send_message(QueueUrl="https://sqs.us-east-1.amazonaws.com/XXXXXXXXX/test-queue-name",MessageBody=time_date)
+    
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Processed')
+    }
